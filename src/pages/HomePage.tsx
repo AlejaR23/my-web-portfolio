@@ -4,6 +4,7 @@ import { PacmanHero } from '../components/PacmanHero';
 import { KonradLogoMarquee } from '../components/KonradLogoMarquee';
 import { ExofaunaHeroArtwork } from '../components/ExofaunaHeroArtwork';
 import { ProjectArtworkRenderer } from '../components/ProjectArtworks';
+import { LiquidGlassProjectCard } from '../components/LiquidGlassProjectCard';
 import { ScalerHomeLogoShowcase } from '../components/ScalerHomeLogoShowcase';
 import { ScrollReveal } from '../components/ScrollReveal';
 import { LetterScrollReveal } from '../components/LetterScrollReveal';
@@ -147,43 +148,14 @@ export function HomePage() {
               </p>
             </ScrollReveal>
 
-            {/* 2-Column Grid spanning wide from left to right */}
+            {/* 2-Column Grid with Floating Liquid Glass Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 w-full">
               {spotlightProjects.map((project) => (
                 <ScrollReveal key={project.slug} blur={8} yOffset={24}>
-                  <Link
-                    to={`/work/${project.slug}`}
-                    className="group flex flex-col space-y-4 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--text)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--bg)]"
-                  >
-                    {/* Image Container with aspect ratio ~ 1.44 */}
-                    <div className="w-full aspect-[16/11] bg-[var(--surface)] overflow-hidden rounded-lg sm:rounded-xl relative shadow-md border border-[var(--border)]/30">
-                      <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.03]">
-                        <ProjectArtworkRenderer project={project} />
-                      </div>
-                    </div>
-
-                    {/* Text & Metadata Container */}
-                    <div className="pt-2 space-y-2">
-                      <div className="flex items-center justify-between gap-4">
-                        <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text)] group-hover:opacity-80 transition-opacity">
-                          {project.title}
-                        </h3>
-                        <ArrowUpRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors shrink-0" aria-hidden="true" />
-                      </div>
-
-                      <p className="text-sm sm:text-base text-[var(--text-muted)] line-clamp-2 font-light leading-relaxed">
-                        {project.subtitle || project.shortDescription}
-                      </p>
-
-                      <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-subtle)] pt-1 tabular-nums">
-                        <span>{project.category}</span>
-                        <span>·</span>
-                        <span>{project.year || '2024–2026'}</span>
-                        <span>·</span>
-                        <span className="text-[var(--text)] font-medium">Ver proyecto →</span>
-                      </div>
-                    </div>
-                  </Link>
+                  <LiquidGlassProjectCard
+                    project={project}
+                    aspect="aspect-[16/11] min-h-[360px] sm:min-h-[440px] md:min-h-[480px]"
+                  />
                 </ScrollReveal>
               ))}
             </div>
@@ -362,7 +334,7 @@ export function HomePage() {
                   to="/contact" 
                   className="btn-bounce w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-[var(--surface)] text-[var(--text)] font-semibold text-xs tracking-wider uppercase rounded-full border border-[var(--border)] shadow-xs hover:bg-[var(--surface-raised,var(--surface))]"
                 >
-                  <span>Formulario</span>
+                  <span>Contacto</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Link>
               </div>

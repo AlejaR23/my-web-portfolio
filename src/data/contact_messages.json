@@ -1,0 +1,18 @@
+[
+  {
+    "name": "alejandro",
+    "email": "alejandrorr.castro23@outlook.com",
+    "message": "hola prueba",
+    "recipient": "alejandrorr.castro23@outlook.com",
+    "sentAt": "2026-10-29T21:01:33.159Z",
+    "receivedAt": "2026-10-29T21:01:33.474Z"
+  },
+  {
+    "name": "Alejandro",
+    "email": "alejandrorr.castro23@outlook.com",
+    "message": "hola\n",
+    "recipient": "alejandrorr.castro23@outlook.com",
+    "sentAt": "2026-10-29T21:03:56.078Z",
+    "receivedAt": "2026-10-29T21:03:56.086Z"
+  }
+]
