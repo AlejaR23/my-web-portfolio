@@ -30,9 +30,9 @@
   /* =========================================================================
      DARK THEME (Minimalist Obsidian / Atelier)
      ========================================================================= */
-  --bg: #090b0e;
-  --surface: #12161a;
-  --surface-raised: #181d22;
+  --bg: #000000;
+  --surface: #0a0b0d;
+  --surface-raised: #121418;
   --border: rgba(255, 255, 255, 0.09);
   --border-hover: rgba(255, 255, 255, 0.24);
   --text: #ffffff;
@@ -42,7 +42,7 @@
   --primary-hover: #e2e8f0;
   --secondary: #cbd5e1;
   --complement: #ffffff;
-  --on-accent: #090b0e;
+  --on-accent: #000000;
 
   color-scheme: dark;
 }
@@ -369,6 +369,32 @@
 
 .marquee-hover-pause:hover .animate-marquee-seamless {
   animation-play-state: paused;
+}
+
+/* Dynamic Interactive Button Bounce */
+.btn-bounce {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .btn-bounce:hover {
+    transform: translateY(-3px) scale(1.04);
+  }
+}
+
+.btn-bounce:active {
+  transform: translateY(0px) scale(0.97);
+  transition-duration: 0.12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-bounce,
+  .btn-bounce:hover,
+  .btn-bounce:active {
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* Custom Scrollbar */

@@ -131,16 +131,9 @@ export function FloatingCylinderCarousel({ projects, hideHeader = false }: Float
               <h3 className="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-white">
                 Exploración de Obras
               </h3>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1 max-w-lg">
-                Vidrio líquido interactivo: desliza para orbitar en círculo o haz clic en cualquier obra.
-              </p>
             </div>
 
             <div className="flex items-center gap-3 font-mono text-xs">
-              <span className="text-neutral-400 dark:text-neutral-500 hidden lg:inline-flex items-center gap-1.5 text-[11px]">
-                <MoveHorizontal className="w-3.5 h-3.5" />
-                <span>Desliza para dar vueltas</span>
-              </span>
 
               {/* Play / Pause Toggle Button */}
               <button

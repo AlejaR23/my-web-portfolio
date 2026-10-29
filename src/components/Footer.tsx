@@ -14,7 +14,7 @@ export function Footer() {
       id="footer"
       className="w-full bg-[#0d0d0d] text-white font-sans transition-colors duration-200 select-none overflow-hidden"
     >
-      <div className="w-full px-6 sm:px-10 md:px-14 lg:px-16 xl:px-20 pt-20 sm:pt-28 pb-4 flex flex-col justify-between min-h-[95svh]">
+      <div className="max-w-[1920px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-10 pt-20 sm:pt-28 pb-4 flex flex-col justify-between min-h-[95svh]">
         
         {/* =========================================================================
             TOP SECTION: EXACT 4-COLUMN HYPER EFFEKT GRID (From Reference Screenshot)
@@ -30,7 +30,7 @@ export function Footer() {
                 className="group inline-flex items-center gap-2 text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-white hover:text-neutral-300 transition-colors leading-tight"
               >
                 <span>Hablemos de tu proyecto</span>
-                <ArrowUpRight className="w-6 h-6 sm:w-7 sm:h-7 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0" />
+                <ArrowUpRight className="w-6 h-6 sm:w-7 sm:h-7 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0" aria-hidden="true" />
               </Link>
             </div>
 
@@ -57,7 +57,7 @@ export function Footer() {
                 className="text-white hover:text-neutral-300 transition-colors inline-flex items-center gap-1.5 font-sans text-sm sm:text-base font-normal group"
               >
                 <span>Contactar por correo</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-white transition-colors" />
+                <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-white transition-colors" aria-hidden="true" />
               </a>
               <p className="text-neutral-400 font-normal">
                 Respuesta en menos de 24 horas
@@ -66,7 +66,7 @@ export function Footer() {
 
             {/* Bottom: Background & Availability */}
             <div className="space-y-2 text-xs sm:text-[13px] text-neutral-400">
-              <p className="text-neutral-300 font-mono text-[12px]">
+              <p className="text-neutral-300 font-mono text-[12px] tabular-nums">
                 Diseño Publicitario (2026)
               </p>
               <p className="text-neutral-400 font-mono text-[12px]">
@@ -85,7 +85,7 @@ export function Footer() {
               <ul className="space-y-2 text-sm sm:text-[15px] text-neutral-200">
                 <li><Link to="/work" className="hover:text-white transition-colors">Proyectos</Link></li>
                 <li><Link to="/about" className="hover:text-white transition-colors">Perfil</Link></li>
-                <li><Link to="/scaler" className="hover:text-white transition-colors">Scaler</Link></li>
+                <li><Link to="/working-on" className="hover:text-white transition-colors">Working on (Scaler)</Link></li>
                 <li><Link to="/updates" className="hover:text-white transition-colors">Bitácora</Link></li>
                 <li><Link to="/contact" className="hover:text-white transition-colors">Contacto</Link></li>
               </ul>
@@ -126,7 +126,7 @@ export function Footer() {
                     className="hover:text-white transition-colors inline-flex items-center gap-1.5"
                   >
                     <span>Behance Oficial 2026</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
                   </a>
                 </li>
                 <li>
@@ -135,7 +135,7 @@ export function Footer() {
                     className="hover:text-white transition-colors inline-flex items-center gap-1.5 cursor-pointer text-neutral-400 hover:text-white pt-1 text-xs sm:text-[13px]"
                   >
                     <span>Volver arriba</span>
-                    <ArrowUp className="w-3.5 h-3.5" />
+                    <ArrowUp className="w-3.5 h-3.5" aria-hidden="true" />
                   </button>
                 </li>
               </ul>

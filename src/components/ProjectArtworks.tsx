@@ -199,45 +199,6 @@ export function GenericProjectArtwork({
           <ProjectVisualGraphic project={projectStub as Project} />
         </div>
       )}
-
-      {/* Floating Upload / Restore Controls (Available for ALL projects) */}
-      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 flex items-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity">
-        {customImage && (
-          <button
-            type="button"
-            onClick={handleClear}
-            title={`Restaurar portada original de ${title}`}
-            aria-label="Restaurar portada original"
-            className="p-1.5 sm:p-2 bg-[var(--surface)]/95 backdrop-blur-md hover:bg-red-500 hover:text-white text-[var(--text)] border border-[var(--border)] transition-all cursor-pointer shadow-md rounded-[2px]"
-          >
-            <X className="w-3.5 h-3.5" aria-hidden="true" />
-          </button>
-        )}
-
-        <label
-          title={`Cargar imagen de portada para ${title}`}
-          aria-label={`Cargar imagen de portada para ${title}`}
-          onClick={(e) => e.stopPropagation()}
-          className="p-1.5 px-3 bg-black/75 hover:bg-black text-white border border-white/20 text-xs font-sans tracking-tight transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-md backdrop-blur-sm rounded-[2px]"
-        >
-          <Upload className="w-3.5 h-3.5" aria-hidden="true" />
-          <span>{customImage ? 'Cambiar foto' : 'Cargar foto'}</span>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="sr-only"
-            aria-label={`Seleccionar nueva foto de portada para ${title}`}
-          />
-        </label>
-      </div>
-
-      {/* Dragging Overlay */}
-      {isDragging && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center text-white font-medium text-xs sm:text-sm z-40 border-2 border-dashed border-white p-4 text-center">
-          Suelta la imagen para aplicarla como portada de {title}
-        </div>
-      )}
     </div>
   );
 }

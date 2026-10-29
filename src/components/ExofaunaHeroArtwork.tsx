@@ -144,57 +144,6 @@ export function ExofaunaHeroArtwork({
         loading="eager"
         className="absolute inset-0 w-full h-full object-cover block select-none transition-transform duration-500 ease-out group-hover:scale-[1.01]"
       />
-
-      {/* Floating Upload / Restore Control */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-2 opacity-85 group-hover:opacity-100 transition-opacity">
-        {customImage && (
-          <button
-            onClick={handleClear}
-            title="Restaurar fotografía original de Exofauna"
-            aria-label="Restaurar fotografía original de Exofauna"
-            className="p-2 bg-[var(--surface)]/90 backdrop-blur-md hover:bg-red-500 hover:text-white text-[var(--text)] border border-[var(--border)] transition-all cursor-pointer shadow-md rounded-[2px]"
-          >
-            <X className="w-3.5 h-3.5" aria-hidden="true" />
-          </button>
-        )}
-
-        <label
-          title="Cambiar fotografía"
-          aria-label="Cambiar fotografía"
-          className="p-1.5 px-3 bg-black/75 hover:bg-black text-white border border-white/20 text-xs font-sans tracking-tight transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-md backdrop-blur-sm rounded-[2px]"
-        >
-          <Upload className="w-3.5 h-3.5" aria-hidden="true" />
-          <span>{customImage ? 'Cambiar foto' : 'Cargar foto'}</span>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="sr-only"
-          />
-        </label>
-      </div>
-
-      {/* Accessible Error Alert (role="alert" / aria-live="assertive") */}
-      {errorMessage && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-40 max-w-md bg-red-950/95 text-white border border-red-500/70 p-3 shadow-2xl backdrop-blur-md flex items-start justify-between gap-3 text-xs font-sans animate-in fade-in slide-in-from-bottom-2 duration-200"
-        >
-          <div className="flex flex-col gap-0.5">
-            <span className="font-semibold text-red-200">Error al guardar</span>
-            <span className="text-[11px] text-red-300 font-mono leading-tight">{errorMessage}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setErrorMessage(null)}
-            className="text-red-300 hover:text-white p-0.5 cursor-pointer shrink-0"
-            aria-label="Cerrar aviso de error"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
     </div>
   );
 }

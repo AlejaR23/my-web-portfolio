@@ -9,7 +9,7 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
+  theme: 'light',
   toggleTheme: () => {},
   setTheme: () => {},
 });
@@ -22,7 +22,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     }
-    return 'dark';
+    return 'light';
   });
 
   const setTheme = (t: Theme) => {
@@ -40,6 +40,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     const body = document.body;
     
+    root.style.colorScheme = theme;
+
     if (theme === 'dark') {
       root.classList.add('dark');
       body.classList.add('dark');
@@ -54,6 +56,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       body.classList.remove('dark');
       body.style.backgroundColor = '';
       body.style.color = '';
+    }
+
+    // Dynamic theme-color sync per Web Interface Guidelines
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', theme === 'dark' ? '#000000' : '#ffffff');
     }
   }, [theme]);
 
