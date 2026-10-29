@@ -44,7 +44,7 @@ function AppContent() {
     if (path.startsWith('/work/')) {
       return <ProjectDetailPage />;
     }
-    if (path === '/scaler') {
+    if (path === '/scaler' || path === '/working-on') {
       return <ScalerPage />;
     }
     if (path === '/updates') {
@@ -66,16 +66,16 @@ function AppContent() {
         <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-8 leading-relaxed">
           La ruta solicitada no existe o ha sido reubicada dentro del portafolio.
         </p>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             to="/"
-            className="flat-btn-primary !bg-[#1D4ED8] !border-[#1D4ED8] !text-white hover:!bg-[#1e40af]"
+            className="btn-bounce inline-flex items-center px-8 py-3.5 bg-[var(--primary)] text-[var(--on-accent)] font-semibold text-xs tracking-wider uppercase rounded-full shadow-md hover:bg-[var(--primary-hover)]"
           >
             Volver al inicio
           </Link>
           <Link
             to="/work"
-            className="flat-btn-secondary"
+            className="btn-bounce inline-flex items-center px-8 py-3.5 bg-[var(--surface)] text-[var(--text)] font-semibold text-xs tracking-wider uppercase rounded-full border border-[var(--border)] shadow-xs hover:bg-[var(--surface-raised,var(--surface))]"
           >
             Explorar proyectos
           </Link>
@@ -85,11 +85,11 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-neutral-900 dark:text-neutral-100 selection:bg-[#1D4ED8] selection:text-white dark:selection:bg-[#1D4ED8] dark:selection:text-white flex flex-col justify-between relative transition-colors duration-200">
+    <div className="min-h-screen bg-transparent text-[var(--text)] flex flex-col justify-between relative transition-colors duration-200">
       {/* Skip to Content Link for Keyboard and Screen Reader Accessibility */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-4 py-2 bg-[#111215] text-white dark:bg-white dark:text-black rounded-full shadow-xl outline-none ring-2 ring-[#1D4ED8] text-xs font-mono font-medium"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-4 py-2 bg-[var(--primary)] text-[var(--on-accent)] rounded-full shadow-xl outline-none ring-2 ring-[var(--text)] ring-offset-2 ring-offset-[var(--bg)] text-xs font-mono font-medium"
       >
         Saltar al contenido principal
       </a>
@@ -111,7 +111,7 @@ function AppContent() {
         <button
           onClick={scrollToTop}
           aria-label="Volver arriba"
-          className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-white/90 dark:bg-neutral-900/90 text-neutral-800 dark:text-neutral-200 border border-neutral-900/[0.1] dark:border-white/[0.12] shadow-xl backdrop-blur-xl hover:scale-110 active:scale-95 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] dark:focus-visible:ring-[#3B82F6]"
+          className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-[var(--surface)]/90 text-[var(--text)] border border-[var(--border)] shadow-xl backdrop-blur-xl hover:scale-105 active:scale-95 transition-[transform,background-color,border-color,box-shadow] duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]"
         >
           <ArrowUp className="w-4 h-4" aria-hidden="true" />
         </button>

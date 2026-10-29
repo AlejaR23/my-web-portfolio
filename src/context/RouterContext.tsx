@@ -47,6 +47,26 @@ export function RouterProvider({ children }: { children: React.ReactNode }) {
     params.updateSlug = path.replace('/updates/', '').split('/')[0];
   }
 
+  // Synchronize document.title with context per UI/UX guidelines
+  useEffect(() => {
+    let title = 'Alejandro Rivera: Portafolio de Diseño Publicitario';
+    if (path === '/about') {
+      title = 'Sobre mí · Alejandro Rivera';
+    } else if (path === '/work') {
+      title = 'Proyectos · Alejandro Rivera';
+    } else if (params.slug) {
+      const formattedSlug = params.slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      title = `${formattedSlug} · Alejandro Rivera`;
+    } else if (path === '/scaler' || path === '/working-on') {
+      title = 'Working on: Scaler · Alejandro Rivera';
+    } else if (path === '/updates') {
+      title = 'Bitácora & Actualizaciones · Alejandro Rivera';
+    } else if (path === '/contact') {
+      title = 'Contacto · Alejandro Rivera';
+    }
+    document.title = title;
+  }, [path, params.slug]);
+
   return (
     <RouterContext.Provider value={{ path, navigate, params }}>
       {children}

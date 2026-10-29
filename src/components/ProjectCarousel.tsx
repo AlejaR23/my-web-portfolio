@@ -41,7 +41,7 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
-      <div className="w-full px-6 sm:px-10 md:px-14 lg:px-16 xl:px-20">
+      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
         
         {/* Carousel Header & Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-8 mb-8 border-b border-neutral-200 dark:border-neutral-800 gap-4">

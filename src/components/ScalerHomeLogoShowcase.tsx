@@ -48,6 +48,7 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
 
   const [isDragging, setIsDragging] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [naturalDimensions, setNaturalDimensions] = useState<{ width: number; height: number } | null>(null);
 
   // Load from IndexedDB
   useEffect(() => {
@@ -100,6 +101,24 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
   // When in white mode, if the image shown is the color logo without a dedicated white upload, invert black text to pure white.
   const shouldInvertToWhite = isWhiteMode && !darkImage && Boolean(colorImage);
 
+  // Measure intrinsic dimensions of the image to adapt container without distortion or cropping
+  useEffect(() => {
+    if (!currentImage) {
+      setNaturalDimensions(null);
+      return;
+    }
+    const img = new window.Image();
+    img.src = currentImage;
+    img.onload = () => {
+      if (img.naturalWidth && img.naturalHeight) {
+        setNaturalDimensions({
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        });
+      }
+    };
+  }, [currentImage]);
+
   const handleUploadFile = async (file: File) => {
     setErrorMessage(null);
     try {
@@ -125,6 +144,7 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
 
   const handleClear = async () => {
     setErrorMessage(null);
+    setNaturalDimensions(null);
     if (isWhiteMode) {
       setDarkImage(null);
       await removePersistedImage('SLOT-SCALER-HOME-DARK');
@@ -145,13 +165,13 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
     <div className={`relative flex flex-col gap-3 w-full ${className}`}>
       {/* Top Interactive Selector Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-        <div className="flex items-center gap-1.5 bg-[var(--surface)] p-1 text-[11px] font-mono border border-[var(--border)]">
+        <div className="flex items-center gap-1 bg-[var(--surface)] p-1 text-[11px] font-mono rounded-full border border-[var(--border)]">
           <button
             type="button"
             onClick={() => handleSelectMode('color')}
-            className={`px-3 py-1 transition-all cursor-pointer ${
+            className={`px-3.5 py-1 rounded-full transition-all cursor-pointer ${
               viewMode === 'color'
-                ? 'bg-[var(--primary)] text-[var(--on-accent)] font-semibold'
+                ? 'bg-[var(--primary)] text-[var(--on-accent)] font-semibold shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text)]'
             }`}
           >
@@ -161,9 +181,9 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
           <button
             type="button"
             onClick={() => handleSelectMode('white')}
-            className={`px-3 py-1 transition-all cursor-pointer ${
+            className={`px-3.5 py-1 rounded-full transition-all cursor-pointer ${
               viewMode === 'white'
-                ? 'bg-[var(--primary)] text-[var(--on-accent)] font-semibold'
+                ? 'bg-[var(--primary)] text-[var(--on-accent)] font-semibold shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--text)]'
             }`}
           >
@@ -172,14 +192,14 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
         </div>
 
         <div className="flex items-center gap-2 text-[10px] font-mono tracking-wider uppercase text-[var(--text-muted)]">
-          <span className="inline-flex items-center gap-1">
+          <span className="inline-flex items-center gap-1.5">
             <span className={`w-1.5 h-1.5 rounded-full ${isWhiteMode ? 'bg-white' : 'bg-neutral-900 dark:bg-white'}`} />
             {isWhiteMode ? 'Modo Oscuro: Versión Blanco' : 'Modo Claro: Full Color'}
           </span>
         </div>
       </div>
 
-      {/* Main Display Canvas */}
+      {/* Main Display Canvas (Flat, borderless presentation spanning full width) */}
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -194,55 +214,44 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
             handleUploadFile(f);
           }
         }}
-        className={`relative aspect-[16/9] w-full border border-[var(--border)] bg-[var(--surface)] transition-colors duration-300 overflow-hidden flex flex-col items-center justify-center ${
-          isDragging ? 'border-[var(--text)] scale-[0.99]' : ''
+        className={`relative w-full border-0 bg-transparent transition-colors duration-300 overflow-hidden rounded-xl sm:rounded-2xl ${
+          isDragging ? 'outline-2 outline-dashed outline-[var(--text)]' : ''
         }`}
+        style={
+          currentImage && naturalDimensions
+            ? {
+                aspectRatio: `${naturalDimensions.width} / ${naturalDimensions.height}`,
+              }
+            : undefined
+        }
       >
         {currentImage ? (
-          <div className="absolute inset-0 w-full h-full group select-none overflow-hidden">
+          <div className="relative w-full h-auto group select-none overflow-hidden">
             <img
               src={currentImage}
               alt="Scaler Logo"
-              className={`w-full h-full object-cover block transition-transform duration-300 group-hover:scale-[1.01] ${
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                if (img.naturalWidth && img.naturalHeight) {
+                  setNaturalDimensions({
+                    width: img.naturalWidth,
+                    height: img.naturalHeight,
+                  });
+                }
+              }}
+              className={`w-full h-auto block select-none transition-transform duration-500 ease-out group-hover:scale-[1.01] ${
                 shouldInvertToWhite ? 'brightness-0 invert drop-shadow-[0_2px_12px_rgba(255,255,255,0.15)]' : ''
               }`}
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+              }}
             />
-
-            {/* Top Bar with Badge, Replace Button, and Clear Button */}
-            <div className="absolute top-3 right-3 sm:top-3.5 sm:right-3.5 flex items-center gap-1.5 sm:gap-2 z-20 opacity-80 group-hover:opacity-100 transition-opacity">
-              <span className="px-2.5 py-1 bg-[var(--bg)]/90 backdrop-blur-md text-[var(--text)] text-[10px] font-mono tracking-wider uppercase font-semibold border border-[var(--border)] shadow-xs select-none">
-                  {isWhiteMode ? 'Logo Blanco' : 'Full Color'}
-                </span>
-
-                <label
-                  className="p-1.5 sm:p-2 bg-[var(--bg)]/90 backdrop-blur-md hover:bg-[var(--text)] text-[var(--text)] hover:text-[var(--bg)] border border-[var(--border)] shadow-xs transition-colors cursor-pointer"
-                  title={isWhiteMode ? "Subir versión en blanco para modo oscuro" : "Subir versión full color para modo claro"}
-                >
-                  <Upload className="w-3.5 h-3.5" aria-hidden="true" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) handleUploadFile(f);
-                    }}
-                    className="sr-only"
-                  />
-                </label>
-
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  className="p-1.5 sm:p-2 bg-[var(--bg)]/90 backdrop-blur-md hover:bg-red-500 hover:text-white text-[var(--text)] border border-[var(--border)] shadow-xs transition-colors cursor-pointer"
-                  title="Restaurar logo"
-                >
-                  <X className="w-3.5 h-3.5" aria-hidden="true" />
-                </button>
-              </div>
           </div>
         ) : (
           /* Authentic Vector Brandmark Showcase */
-          <div className={`w-full h-full flex flex-col items-center justify-center relative p-8 select-none transition-colors duration-300 ${
+          <div className={`w-full aspect-[16/9] min-h-[340px] sm:min-h-[460px] md:min-h-[520px] flex flex-col items-center justify-center relative p-8 select-none transition-colors duration-300 rounded-xl sm:rounded-2xl border border-[var(--border)]/20 ${
             isWhiteMode ? 'bg-[#0A0B0E] text-white' : 'bg-[#FAFAF8] text-neutral-900'
           }`}>
             <svg 
@@ -297,23 +306,6 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
                 CREATIVE VENTURE &amp; BRAND OPS
               </text>
             </svg>
-
-            {/* Upload Trigger */}
-            <div className="absolute bottom-3 right-3 opacity-70 hover:opacity-100 transition-opacity">
-              <label className="p-1 px-2.5 bg-black/75 hover:bg-black text-white text-[10px] font-mono inline-flex items-center gap-1 cursor-pointer border border-white/20 rounded-[2px] shadow-sm">
-                <Upload className="w-3 h-3" aria-hidden="true" />
-                <span>Subir logo</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleUploadFile(f);
-                  }}
-                  className="sr-only"
-                />
-              </label>
-            </div>
           </div>
         )}
       </div>

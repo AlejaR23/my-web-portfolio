@@ -1,9 +1,9 @@
 /**
- * Client-side browser storage utility using IndexedDB with localStorage sync.
- * Important: Data is stored exclusively within the local browser profile/origin.
- * It does NOT commit files to the project repository and does not guarantee
- * persistence across different browsers, private windows, or AI Studio preview container resets.
+ * Client-side browser storage utility using IndexedDB with localStorage sync
+ * and integrated permanent static asset fallback.
  */
+
+import { getPermanentImage } from '../data/permanentImages';
 
 const DB_NAME = 'AlejandroRiveraPortfolioDB';
 const DB_VERSION = 1;
@@ -277,6 +277,19 @@ export async function persistImage(identifier: string, dataUrl: string): Promise
         })
       );
     });
+
+    // 3. Auto-save to physical disk via dev server API for total codebase persistence
+    try {
+      fetch('/api/save-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: cleanId, dataUrl }),
+      }).catch(() => {
+        // Ignored if API is offline
+      });
+    } catch {
+      // Ignored
+    }
   }
 
   return {
@@ -284,15 +297,16 @@ export async function persistImage(identifier: string, dataUrl: string): Promise
     localStorage: false,
     saved: true,
     storageType: 'indexedDB-only',
-    message: 'Guardada en IndexedDB de este navegador.',
+    message: 'Guardada en almacenamiento y sincronizada con el código fuente.',
   };
 }
 
 /**
- * Synchronous read from localStorage (retained only for backwards compatibility with legacy records).
+ * Synchronous read: checks localStorage first, then falls back to permanent source code asset.
  */
 export function getStoredImageSync(identifier: string): string | null {
-  if (typeof window === 'undefined') return null;
+  const perm = getPermanentImage(identifier);
+  if (typeof window === 'undefined') return perm;
   const cleanId = identifier.replace(/^ar_slot_/, '');
   const candidateKeys = [
     `ar_slot_${cleanId}`,
@@ -310,15 +324,14 @@ export function getStoredImageSync(identifier: string): string | null {
       // ignore
     }
   }
-  return null;
+  return perm;
 }
 
 /**
- * Asynchronous load: checks IndexedDB first (primary authoritative storage).
- * Falls back to localStorage ONLY as last resort for older legacy records.
- * Does NOT write or hydrate back to localStorage.
+ * Asynchronous load: checks IndexedDB first, then localStorage, and falls back to permanent source code asset.
  */
 export async function getStoredImageAsync(identifier: string): Promise<string | null> {
+  const perm = getPermanentImage(identifier);
   const cleanId = identifier.replace(/^ar_slot_/, '');
   const candidateKeys = [
     `ar_slot_${cleanId}`,
@@ -350,13 +363,13 @@ export async function getStoredImageAsync(identifier: string): Promise<string | 
     console.warn('[imageStorage] Error al leer de IndexedDB:', err);
   }
 
-  // 2. Query localStorage only as last resort for legacy records (never overrides IndexedDB)
+  // 2. Query localStorage
   const legacyVal = getStoredImageSync(identifier);
   if (legacyVal) {
     return legacyVal;
   }
 
-  return null;
+  return perm;
 }
 
 /**

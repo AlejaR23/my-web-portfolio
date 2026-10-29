@@ -1,4 +1,5 @@
 import defaultExofaunaImage from '../assets/images/exofauna-mesa-14-100.jpg';
+import { getPermanentImage } from '../data/permanentImages';
 
 /**
  * High-definition visual SVG data URIs for projects in Alejandro Rivera's portfolio.
@@ -10,6 +11,9 @@ function encodeSvg(svgString: string): string {
 }
 
 export function getProjectDefaultImage(slug: string): string {
+  const permanent = getPermanentImage(slug);
+  if (permanent) return permanent;
+
   switch (slug) {
     case 'exofauna':
       return defaultExofaunaImage;
@@ -437,6 +441,9 @@ export function getProjectDefaultImage(slug: string): string {
 export function getDefaultSlotImage(slotIdentifier: string): string | null {
   if (!slotIdentifier) return null;
   const cleanId = slotIdentifier.replace(/^ar_slot_/, '');
+
+  const permanent = getPermanentImage(cleanId);
+  if (permanent) return permanent;
 
   if (cleanId === 'exofauna' || cleanId === 'SLOT-01' || cleanId === 'exofauna-slot-01') {
     return defaultExofaunaImage;
