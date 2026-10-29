@@ -13,7 +13,7 @@ import imgExofauna from '../assets/uploads/SLOT-01-exofauna.jpg';
 import imgTempo from '../assets/uploads/SLOT-02-tempo.jpg';
 import imgSeValeAvisar from '../assets/uploads/SLOT-03-se-vale-avisar.jpg';
 import imgTravelingChicken from '../assets/uploads/SLOT-04-the-traveling-chicken.png';
-import imgVaultClothing from '../assets/uploads/SLOT-05-vault-clothing.png';
+import imgVaultClothing from '../assets/uploads/SLOT-05.png';
 import imgTazzaCafe from '../assets/uploads/SLOT-06-tazza-cafe.png';
 import imgKiemUniversity from '../assets/uploads/SLOT-07-kiem-university.png';
 
@@ -146,24 +146,22 @@ export function getPermanentImage(identifier: string): string | null {
   if (!identifier) return null;
   const clean = identifier.replace(/^ar_slot_/, '').toLowerCase().trim();
 
-  // Búsqueda en manifest dinámico
+  // 1. Búsqueda directa en bundle estático (Vite empaqueta estos assets para producción y localhost)
+  if (PERMANENT_ASSET_MAP[clean]) {
+    return PERMANENT_ASSET_MAP[clean];
+  }
+  for (const [key, value] of Object.entries(PERMANENT_ASSET_MAP)) {
+    if (key.toLowerCase() === clean) {
+      return value;
+    }
+  }
+
+  // 2. Búsqueda en manifest dinámico para galerías y slots adicionales
   const manifest = uploadedManifest as Record<string, string>;
   if (manifest[clean]) return manifest[clean];
   if (manifest[identifier]) return manifest[identifier];
   for (const [k, v] of Object.entries(manifest)) {
     if (k.toLowerCase() === clean) return v;
-  }
-
-  // Búsqueda directa en bundle
-  if (PERMANENT_ASSET_MAP[clean]) {
-    return PERMANENT_ASSET_MAP[clean];
-  }
-
-  // Búsqueda insensible a mayúsculas
-  for (const [key, value] of Object.entries(PERMANENT_ASSET_MAP)) {
-    if (key.toLowerCase() === clean) {
-      return value;
-    }
   }
 
   return null;

@@ -5,11 +5,8 @@ import { Project } from '../types';
 import { 
   getStoredImageSync, 
   getStoredImageAsync,
-  persistImage,
-  optimizeImageFile,
-  removePersistedImage
 } from '../utils/imageStorage';
-import { Upload, X } from 'lucide-react';
+import { getPermanentImage } from '../data/permanentImages';
 
 const SLUG_TO_SLOT_MAP: Record<string, string> = {
   exofauna: 'SLOT-01',
@@ -46,15 +43,15 @@ export function GenericProjectArtwork({
 
   const [customImage, setCustomImage] = useState<string | null>(() => {
     return (
+      getPermanentImage(slug) ||
+      getPermanentImage(coverSlot) ||
+      (slot ? getPermanentImage(slot) : null) ||
       getStoredImageSync(slug) ||
       getStoredImageSync(coverSlot) ||
       (slot ? getStoredImageSync(slot) : null) ||
       null
     );
   });
-
-  const [isHovered, setIsHovered] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -93,73 +90,6 @@ export function GenericProjectArtwork({
     };
   }, [slug, slot, coverSlot]);
 
-  // Global paste handler when hovering over this project card
-  useEffect(() => {
-    const handleGlobalPaste = (e: ClipboardEvent) => {
-      if (!isHovered) return;
-      const items = e.clipboardData?.items;
-      if (!items) return;
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        if (item.type.startsWith('image/')) {
-          const file = item.getAsFile();
-          if (file) {
-            e.preventDefault();
-            saveUploadedFile(file);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('paste', handleGlobalPaste);
-    return () => {
-      window.removeEventListener('paste', handleGlobalPaste);
-    };
-  }, [isHovered, slug]);
-
-  const saveUploadedFile = async (file: File) => {
-    try {
-      const optimized = await optimizeImageFile(file);
-      await persistImage(slug, optimized);
-      await persistImage(coverSlot, optimized);
-      if (slot) {
-        await persistImage(slot, optimized);
-      }
-      setCustomImage(optimized);
-    } catch (err) {
-      console.error(`Error al guardar foto de portada para ${slug}:`, err);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      saveUploadedFile(file);
-    }
-    e.target.value = '';
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      saveUploadedFile(file);
-    }
-  };
-
-  const handleClear = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCustomImage(null);
-    await removePersistedImage(slug);
-    await removePersistedImage(coverSlot);
-    if (slot) {
-      await removePersistedImage(slot);
-    }
-  };
-
   const projectStub: Partial<Project> = {
     slug,
     title,
@@ -169,17 +99,7 @@ export function GenericProjectArtwork({
 
   return (
     <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onDrop={handleDrop}
-      onDragOver={(e) => {
-        e.preventDefault();
-        setIsDragging(true);
-      }}
-      onDragLeave={() => setIsDragging(false)}
-      className={`relative w-full h-full overflow-hidden bg-[var(--surface)] group select-none ${
-        isDragging ? 'ring-2 ring-[var(--text)]' : ''
-      } ${className}`}
+      className={`relative w-full h-full overflow-hidden bg-[var(--surface)] group select-none ${className}`}
     >
       {/* Background/Cover Image or Bespoke Artwork */}
       {customImage ? (

@@ -223,7 +223,7 @@ export function FullScreenVideoHero({ onScrollToPortfolio }: FullScreenVideoHero
     setTimeout(() => setVideoNotice(null), 3000);
   };
 
-  const isDev = import.meta.env.DEV;
+  const isDev = false;
 
   return (
     <div
