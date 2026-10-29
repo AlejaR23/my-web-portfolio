@@ -49,6 +49,24 @@ function autoPersistImagesPlugin(): Plugin {
                   } catch {}
                   manifest[identifier] = `/uploads/${filename}`;
                   manifest[cleanName] = `/uploads/${filename}`;
+
+                  // Sincronización automática de alias conocidos para Tazza y Kiem
+                  if (cleanName === 'tazza-cafe' || cleanName === 'SLOT-06' || cleanName === 'tazza-cafe_cover' || cleanName === 'SLOT-06-tazza-cafe') {
+                    const tazzaAliases = ['SLOT-06-tazza-cafe.png', 'SLOT-06.png', 'tazza-cafe.png', 'tazza-cafe_cover.png'];
+                    for (const alias of tazzaAliases) {
+                      fs.writeFileSync(path.join(publicDir, alias), buffer);
+                      fs.writeFileSync(path.join(srcDir, alias), buffer);
+                      manifest[alias.replace(/\.[^.]+$/, '')] = `/uploads/${alias}`;
+                    }
+                  } else if (cleanName === 'kiem-university' || cleanName === 'SLOT-07' || cleanName === 'kiem-university_cover' || cleanName === 'SLOT-07-kiem-university') {
+                    const kiemAliases = ['SLOT-07-kiem-university.png', 'SLOT-07.png', 'kiem-university.png', 'kiem-university_cover.png'];
+                    for (const alias of kiemAliases) {
+                      fs.writeFileSync(path.join(publicDir, alias), buffer);
+                      fs.writeFileSync(path.join(srcDir, alias), buffer);
+                      manifest[alias.replace(/\.[^.]+$/, '')] = `/uploads/${alias}`;
+                    }
+                  }
+
                   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 
                   res.writeHead(200, { 'Content-Type': 'application/json' });
