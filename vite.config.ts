@@ -13,6 +13,38 @@ function autoPersistImagesPlugin(): Plugin {
     name: 'auto-persist-images',
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
+        if (req.url === '/api/contact' && req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk.toString();
+          });
+          req.on('end', () => {
+            try {
+              const data = JSON.parse(body);
+              const dataDir = path.resolve(__dirname, 'src/data');
+              if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+              const logFile = path.resolve(dataDir, 'contact_messages.json');
+              let messages: any[] = [];
+              if (fs.existsSync(logFile)) {
+                try {
+                  messages = JSON.parse(fs.readFileSync(logFile, 'utf-8'));
+                } catch {}
+              }
+              messages.push({
+                ...data,
+                receivedAt: new Date().toISOString(),
+              });
+              fs.writeFileSync(logFile, JSON.stringify(messages, null, 2));
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ ok: true, savedLocally: true }));
+            } catch (err: any) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: err.message }));
+            }
+          });
+          return;
+        }
+
         if (req.url === '/api/save-image' && req.method === 'POST') {
           let body = '';
           req.on('data', (chunk) => {

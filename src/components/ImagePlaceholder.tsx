@@ -18,6 +18,8 @@ export interface ImagePlaceholderProps {
   compact?: boolean;
   fixedFrame?: boolean;
   fillFrame?: boolean;
+  borderless?: boolean;
+  transparentBg?: boolean;
 }
 
 export function ImagePlaceholder({
@@ -28,6 +30,8 @@ export function ImagePlaceholder({
   slotId,
   fixedFrame = false,
   fillFrame = false,
+  borderless = false,
+  transparentBg = false,
 }: ImagePlaceholderProps) {
   const slotIdentifier = slotId || id || '';
   const containerRef = useRef<HTMLDivElement>(null);
@@ -108,7 +112,11 @@ export function ImagePlaceholder({
       <div
         id={id}
         ref={containerRef}
-        className={`relative w-full overflow-hidden bg-[var(--surface)] border border-[var(--border)] select-none flex flex-col items-center justify-center p-8 rounded-xl ${aspectClass} ${className}`}
+        className={`relative w-full overflow-hidden ${
+          transparentBg ? 'bg-transparent' : 'bg-[var(--surface)]'
+        } ${
+          borderless ? 'border-0' : 'border border-[var(--border)]'
+        } select-none flex flex-col items-center justify-center p-8 rounded-xl ${aspectClass} ${className}`}
       >
         <span className="text-xs font-mono text-[var(--text-muted)] text-center">{label}</span>
       </div>
@@ -119,7 +127,11 @@ export function ImagePlaceholder({
     <div
       id={id}
       ref={containerRef}
-      className={`relative w-full overflow-hidden bg-[var(--surface)] border border-[var(--border)] select-none transition-all duration-300 group ${
+      className={`relative w-full overflow-hidden ${
+        transparentBg ? 'bg-transparent' : 'bg-[var(--surface)]'
+      } ${
+        borderless ? 'border-0' : 'border border-[var(--border)]'
+      } select-none transition-all duration-300 group ${
         fixedFrame || isCover
           ? `${aspectClass} p-0`
           : 'h-auto block p-0'
