@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, X, Check, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import {
-  persistImage,
   getStoredImageSync,
   getStoredImageAsync,
-  removePersistedImage,
-  optimizeImageFile,
 } from '../utils/imageStorage';
+import { getPermanentImage } from '../data/permanentImages';
 
 interface ScalerHomeLogoShowcaseProps {
   className?: string;
@@ -21,9 +18,6 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
     return theme === 'dark' ? 'white' : 'color';
   });
 
-  // Track if user manually overrode the automatic theme matching
-  const [userOverrode, setUserOverrode] = useState(false);
-
   // Sync with theme changes automatically unless user explicitly changed it in current view
   useEffect(() => {
     setViewMode(theme === 'dark' ? 'white' : 'color');
@@ -31,6 +25,8 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
 
   const [colorImage, setColorImage] = useState<string | null>(() => {
     return (
+      getPermanentImage('SLOT-SCALER-HOME-LIGHT') ||
+      getPermanentImage('scaler-color') ||
       getStoredImageSync('SLOT-SCALER-HOME-LIGHT') ||
       getStoredImageSync('SLOT-SCALER-HOME') ||
       getStoredImageSync('SLOT-SCALER-LOGO-COLOR') ||
@@ -40,17 +36,17 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
 
   const [darkImage, setDarkImage] = useState<string | null>(() => {
     return (
+      getPermanentImage('SLOT-SCALER-HOME-DARK') ||
+      getPermanentImage('scaler-white') ||
       getStoredImageSync('SLOT-SCALER-HOME-DARK') ||
       getStoredImageSync('SLOT-SCALER-LOGO-WHITE') ||
       null
     );
   });
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [naturalDimensions, setNaturalDimensions] = useState<{ width: number; height: number } | null>(null);
 
-  // Load from IndexedDB
+  // Load from IndexedDB / Storage sync
   useEffect(() => {
     let isMounted = true;
 
@@ -70,13 +66,15 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
       if (
         target === 'SLOT-SCALER-HOME-LIGHT' ||
         target === 'SLOT-SCALER-HOME' ||
-        target === 'SLOT-SCALER-LOGO-COLOR'
+        target === 'SLOT-SCALER-LOGO-COLOR' ||
+        target === 'scaler-color'
       ) {
         setColorImage(dataUrl);
       }
       if (
         target === 'SLOT-SCALER-HOME-DARK' ||
-        target === 'SLOT-SCALER-LOGO-WHITE'
+        target === 'SLOT-SCALER-LOGO-WHITE' ||
+        target === 'scaler-white'
       ) {
         setDarkImage(dataUrl);
       }
@@ -97,11 +95,10 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
     ? (darkImage || colorImage)
     : (colorImage || darkImage);
 
-  // Should we apply a white inversion filter?
-  // When in white mode, if the image shown is the color logo without a dedicated white upload, invert black text to pure white.
+  // If in white mode and we only have the colorImage, apply CSS inversion filter
   const shouldInvertToWhite = isWhiteMode && !darkImage && Boolean(colorImage);
 
-  // Measure intrinsic dimensions of the image to adapt container without distortion or cropping
+  // Load natural dimensions to ensure adaptive, zero-dead-space display
   useEffect(() => {
     if (!currentImage) {
       setNaturalDimensions(null);
@@ -119,46 +116,8 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
     };
   }, [currentImage]);
 
-  const handleUploadFile = async (file: File) => {
-    setErrorMessage(null);
-    try {
-      const optimized = await optimizeImageFile(file);
-      if (isWhiteMode) {
-        // Wait for all required IndexedDB writes to succeed
-        await persistImage('SLOT-SCALER-HOME-DARK', optimized);
-        await persistImage('SLOT-SCALER-LOGO-WHITE', optimized);
-        // Only commit new preview after writes succeed
-        setDarkImage(optimized);
-      } else {
-        await persistImage('SLOT-SCALER-HOME-LIGHT', optimized);
-        await persistImage('SLOT-SCALER-LOGO-COLOR', optimized);
-        setColorImage(optimized);
-      }
-    } catch (err) {
-      console.error('Error saving Scaler logo image:', err);
-      const msg = err instanceof Error ? err.message : 'Error desconocido al guardar en IndexedDB.';
-      setErrorMessage(`No se pudo guardar el logo en el navegador. Se conserva el logo anterior. (${msg})`);
-      setTimeout(() => setErrorMessage(null), 7000);
-    }
-  };
-
-  const handleClear = async () => {
-    setErrorMessage(null);
-    setNaturalDimensions(null);
-    if (isWhiteMode) {
-      setDarkImage(null);
-      await removePersistedImage('SLOT-SCALER-HOME-DARK');
-      await removePersistedImage('SLOT-SCALER-LOGO-WHITE');
-    } else {
-      setColorImage(null);
-      await removePersistedImage('SLOT-SCALER-HOME-LIGHT');
-      await removePersistedImage('SLOT-SCALER-LOGO-COLOR');
-    }
-  };
-
   const handleSelectMode = (mode: 'color' | 'white') => {
     setViewMode(mode);
-    setUserOverrode(true);
   };
 
   return (
@@ -191,8 +150,8 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
           </button>
         </div>
 
-        <div className="flex items-center gap-2 text-[10px] font-mono tracking-wider uppercase text-[var(--text-muted)]">
-          <span className="inline-flex items-center gap-1.5">
+        <div className="flex items-center gap-3">
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono tracking-wider uppercase text-[var(--text-muted)]">
             <span className={`w-1.5 h-1.5 rounded-full ${isWhiteMode ? 'bg-white' : 'bg-neutral-900 dark:bg-white'}`} />
             {isWhiteMode ? 'Modo Oscuro: Versión Blanco' : 'Modo Claro: Full Color'}
           </span>
@@ -201,22 +160,7 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
 
       {/* Main Display Canvas (Flat, borderless presentation spanning full width) */}
       <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragging(true);
-        }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setIsDragging(false);
-          const f = e.dataTransfer.files?.[0];
-          if (f && f.type.startsWith('image/')) {
-            handleUploadFile(f);
-          }
-        }}
-        className={`relative w-full border-0 bg-transparent transition-colors duration-300 overflow-hidden rounded-xl sm:rounded-2xl ${
-          isDragging ? 'outline-2 outline-dashed outline-[var(--text)]' : ''
-        }`}
+        className="relative w-full border-0 bg-transparent transition-colors duration-300 overflow-hidden rounded-xl sm:rounded-2xl"
         style={
           currentImage && naturalDimensions
             ? {
@@ -309,28 +253,6 @@ export function ScalerHomeLogoShowcase({ className = '' }: ScalerHomeLogoShowcas
           </div>
         )}
       </div>
-
-      {/* Accessible Error Alert (role="alert" / aria-live="assertive") */}
-      {errorMessage && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="p-3 bg-red-950/95 text-white border border-red-500/70 shadow-xl backdrop-blur-md flex items-start justify-between gap-3 text-xs font-sans animate-in fade-in"
-        >
-          <div className="flex flex-col gap-0.5">
-            <span className="font-semibold text-red-200">Error al guardar</span>
-            <span className="text-[11px] text-red-300 font-mono leading-tight">{errorMessage}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setErrorMessage(null)}
-            className="text-red-300 hover:text-white p-0.5 cursor-pointer shrink-0"
-            aria-label="Cerrar aviso de error"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
     </div>
   );
 }

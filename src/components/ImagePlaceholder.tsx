@@ -35,8 +35,8 @@ export function ImagePlaceholder({
   const [previewUrl, setPreviewUrl] = useState<string | null>(() => {
     if (!slotIdentifier) return null;
     return (
-      getStoredImageSync(slotIdentifier) ||
       getPermanentImage(slotIdentifier) ||
+      getStoredImageSync(slotIdentifier) ||
       getDefaultSlotImage(slotIdentifier)
     );
   });
@@ -88,10 +88,6 @@ export function ImagePlaceholder({
     };
   }, [previewUrl]);
 
-  if (!previewUrl) {
-    return null;
-  }
-
   const aspectClass =
     aspect === '4:3'
       ? 'aspect-[4/3]'
@@ -106,6 +102,18 @@ export function ImagePlaceholder({
       : 'aspect-[16/9]';
 
   const isCover = fillFrame;
+
+  if (!previewUrl) {
+    return (
+      <div
+        id={id}
+        ref={containerRef}
+        className={`relative w-full overflow-hidden bg-[var(--surface)] border border-[var(--border)] select-none flex flex-col items-center justify-center p-8 rounded-xl ${aspectClass} ${className}`}
+      >
+        <span className="text-xs font-mono text-[var(--text-muted)] text-center">{label}</span>
+      </div>
+    );
+  }
 
   return (
     <div
