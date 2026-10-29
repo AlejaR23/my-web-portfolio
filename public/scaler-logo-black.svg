@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" width="600" height="240">
+  <g transform="translate(120, 120)">
+    <polygon points="0,-64 56,-28 56,36 0,72 -56,36 -56,-28" fill="none" stroke="#000000" stroke-width="4.5" stroke-dasharray="9 4.5" />
+    <polygon points="0,-42 38,-20 38,26 0,50 -38,26 -38,-20" fill="rgba(0,0,0,0.12)" stroke="#000000" stroke-width="2.5" />
+    <circle cx="0" cy="3" r="13" fill="#000000" />
+  </g>
+  <text x="236" y="128" font-family="'Space Grotesk', system-ui, -apple-system, sans-serif" font-weight="800" font-size="48" letter-spacing="6" fill="#000000">SCALER</text>
+  <text x="238" y="158" font-family="'Space Grotesk', monospace" font-weight="600" font-size="12" letter-spacing="3.5" fill="#52525B">CREATIVE VENTURE &amp; BRAND OPS</text>
+</svg>

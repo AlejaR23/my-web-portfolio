@@ -1,0 +1,390 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* =========================================================================
+     LIGHT THEME (Default)
+     ========================================================================= */
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --surface-raised: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.22);
+  --text: #0d1117;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --primary: #0d1117;
+  --primary-hover: #262c36;
+  --secondary: #475569;
+  --complement: #0d1117;
+  --on-accent: #ffffff;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'Space Grotesk', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  
+  color-scheme: light;
+}
+
+.dark {
+  /* =========================================================================
+     DARK THEME (Minimalist Obsidian / Atelier)
+     ========================================================================= */
+  --bg: #090b0e;
+  --surface: #12161a;
+  --surface-raised: #181d22;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-hover: rgba(255, 255, 255, 0.24);
+  --text: #ffffff;
+  --text-muted: #9ba3af;
+  --text-subtle: #6b7280;
+  --primary: #ffffff;
+  --primary-hover: #e2e8f0;
+  --secondary: #cbd5e1;
+  --complement: #ffffff;
+  --on-accent: #090b0e;
+
+  color-scheme: dark;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--text) !important;
+  color: var(--bg) !important;
+}
+
+::-moz-selection {
+  background-color: var(--text) !important;
+  color: var(--bg) !important;
+}
+
+@layer base {
+  html, :root {
+    background-color: var(--bg);
+    color: var(--text);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    overflow-x: hidden;
+  }
+
+  /* Typographic polish per UI/UX guidelines: avoid widows/orphans */
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Number comparisons alignment */
+  .tabular-numbers, [data-tabular] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Keyboard focus ring per WAI-ARIA and AGENTS.md */
+  :focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+.font-sans,
+.font-title {
+  font-family: var(--font-sans);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* =========================================================================
+   BUTTON SYSTEMS (Minimalist Atelier)
+   ========================================================================= */
+.flat-btn-primary,
+.atelier-btn-primary,
+.apple-btn-primary,
+.btn-aerospace-primary {
+  background-color: var(--primary);
+  color: var(--on-accent);
+  border: 1px solid var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.flat-btn-primary:hover,
+.atelier-btn-primary:hover,
+.apple-btn-primary:hover,
+.btn-aerospace-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: var(--on-accent);
+  opacity: 0.92;
+}
+
+.flat-btn-primary:focus-visible,
+.atelier-btn-primary:focus-visible,
+.apple-btn-primary:focus-visible,
+.btn-aerospace-primary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.flat-btn-secondary,
+.atelier-btn-secondary,
+.apple-btn-secondary,
+.btn-aerospace-secondary {
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.flat-btn-secondary:hover,
+.atelier-btn-secondary:hover,
+.apple-btn-secondary:hover,
+.btn-aerospace-secondary:hover {
+  background-color: var(--surface);
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+.flat-btn-secondary:focus-visible,
+.atelier-btn-secondary:focus-visible,
+.apple-btn-secondary:focus-visible,
+.btn-aerospace-secondary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Prose Links */
+.prose-link {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s ease;
+}
+.prose-link:hover {
+  opacity: 0.75;
+}
+
+/* Badges / Chips / Tags */
+.spec-badge,
+.editorial-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background-color: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 0px;
+}
+
+.chip-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background-color: transparent;
+  transition: all 0.15s ease;
+}
+.chip-tag.active {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+/* Surface Cards */
+.surface-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.surface-card:hover {
+  border-color: var(--border-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================================
+   KONRAD ROLLING TEXT
+   ========================================================================= */
+.konrad-roll-wrapper {
+  display: inline-block;
+  vertical-align: bottom;
+  position: relative;
+  line-height: inherit;
+}
+
+.konrad-roll {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: bottom;
+  height: 1.25em;
+  line-height: inherit;
+}
+
+.konrad-roll-track {
+  display: block;
+  position: relative;
+  line-height: inherit;
+  transition: transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  transform: translateY(var(--roll-y, 0%));
+}
+
+.konrad-roll-line {
+  display: block;
+  white-space: nowrap;
+  height: 1.25em;
+  line-height: 1.25em;
+}
+
+.konrad-roll-duplicate {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 1.25em;
+  line-height: 1.25em;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
+.konrad-roll-track.direction-down .konrad-roll-duplicate {
+  top: -100%;
+}
+
+@media (hover: hover) {
+  .konrad-roll-wrapper:hover .konrad-roll-track,
+  .group\/roll:hover .konrad-roll-track,
+  a:hover .konrad-roll-track,
+  button:hover .konrad-roll-track,
+  .group\/navitem:hover .konrad-roll-track,
+  .group\/cta:hover .konrad-roll-track,
+  .group\/btn:hover .konrad-roll-track,
+  .group\/herotitle:hover .konrad-roll-track,
+  .konrad-roll-wrapper:focus-visible .konrad-roll-track,
+  a:focus-visible .konrad-roll-track,
+  button:focus-visible .konrad-roll-track {
+    --roll-y: -100%;
+  }
+
+  .konrad-roll-wrapper:hover .konrad-roll-track.direction-down,
+  a:hover .konrad-roll-track.direction-down,
+  button:hover .konrad-roll-track.direction-down {
+    --roll-y: 100%;
+  }
+}
+
+/* Konrad Infinite Logo Marquee */
+@keyframes konrad-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-konrad-marquee {
+  display: flex;
+  width: max-content;
+  animation: konrad-marquee 40s linear infinite;
+}
+
+.animate-konrad-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Truly Continuous Seamless Infinite Hero Marquee */
+@keyframes marquee-seamless {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee-seamless {
+  display: flex;
+  flex-shrink: 0;
+  animation: marquee-seamless 45s linear infinite;
+  will-change: transform;
+}
+
+.marquee-hover-pause:hover .animate-marquee-seamless {
+  animation-play-state: paused;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
